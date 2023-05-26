@@ -1,0 +1,127 @@
+Sub stocks()
+
+Dim ws As Worksheet
+
+Dim First_Price As Double
+Dim Second_Price As Double
+Dim Yearly_Change As Double
+Dim Percent_Change As Double
+Dim Total_Stock As Double
+Total_Stock = 0
+
+Dim Summary_Table As Integer
+Summary_Table = 2
+
+
+LastRow = Range("A" & Rows.Count).End(xlUp).Row
+
+First_Price = Range("C2").Value
+
+Range("I1").Value = "Ticker"
+Range("J1").Value = "Yearly Change"
+Range("K1").Value = "Percent Change"
+Range("L1").Value = "Total Stock Volume"
+Range("N2").Value = "Greatest % Increase"
+Range("N3").Value = "Greatest % Decrease"
+Range("N4").Value = "Greatest Total Volume"
+Range("O1").Value = "Ticker"
+Range("P1").Value = "Value"
+
+
+For i = 2 To LastRow
+    
+    If Cells(i + 1, 1).Value = " " Then
+        Exit For
+    
+    
+    ElseIf Cells(i + 1, 1).Value <> Cells(i, 1).Value Then
+        
+        Last_Price = Range("F" & i).Value
+        Yearly_Change = Last_Price - First_Price
+        Percent_Change = ((Last_Price + First_Price) / 2)
+        Percent_Change = (Yearly_Change / Percent_Change)
+        Range("K" & Summary_Table).Value = Percent_Change
+        
+        First_Price = Range("C" & i + 1).Value
+        Range("J" & Summary_Table).Value = Yearly_Change
+        Range("I" & Summary_Table).Value = Cells(i, 1)
+        Range("K2:K" & LastRow).NumberFormat = "0.00%"
+        Range("L" & Summary_Table).Value = Total_Stock
+        Summary_Table = Summary_Table + 1
+        
+        
+        Yearly_Change = 0
+        Percent_Change = 0
+        Total_Stock = 0
+        
+    Else
+        
+        Total_Stock = Total_Stock + Range("G" & i).Value
+        
+        
+    End If
+    
+        
+    
+Next i
+
+
+For j = 2 To LastRow
+
+If Cells(j, 10).Value = "" Then
+    Exit For
+
+ElseIf Cells(j, 10) > 0 Then
+    Cells(j, 10).Interior.ColorIndex = 4
+Else
+    Cells(j, 10).Interior.ColorIndex = 3
+    
+End If
+    
+Dim Greatest_Increase As Double
+Dim Ticker_Increase As String
+Dim Greatest_Decrease As Double
+Dim Ticker_Decrease As String
+Dim Greatest_Volume As Double
+Dim Ticker_Volume As String
+
+Greatest_Increase = 0
+Greatest_Decrease = 0
+Greatest_Volume = 0
+
+Next j
+
+For k = 2 To LastRow
+If Cells(k, 11).Value > Greatest_Increase Then
+    Greatest_Increase = Cells(k, 11).Value
+    Ticker_Increase = Cells(k, 9).Value
+    
+End If
+
+If Cells(k, 11).Value < Greatest_Decrease Then
+    Greatest_Decrease = Cells(k, 11).Value
+    Ticker_Decrease = Cells(k, 9).Value
+    
+End If
+
+If Cells(k, 12).Value > Greatest_Volume Then
+    Greatest_Volume = Cells(k, 12).Value
+    Ticker_Volume = Cells(k, 9).Value
+    
+End If
+
+
+
+Next k
+
+Range("O2").Value = Ticker_Increase
+Range("O3").Value = Ticker_Decrease
+Range("O4").Value = Ticker_Volume
+Range("P2:P3").NumberFormat = "0.00%"
+Range("P2").Value = Greatest_Increase
+Range("P3").Value = Greatest_Decrease
+Range("P4").Value = Greatest_Volume
+
+
+
+End Sub
